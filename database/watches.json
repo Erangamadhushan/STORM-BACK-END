@@ -1,0 +1,17 @@
+[
+    {
+        "modelNumber": "ABC123",
+        "brand": "BrandName",
+        "price": 199.99
+    },
+    {
+        "modelNumber": "XYZ789",
+        "brand": "AnotherBrand",
+        "price": 299.99
+    },
+    {
+        "modelNumber": "LMN456",
+        "brand": "ThirdBrand",
+        "price": 149.99
+    }
+]
