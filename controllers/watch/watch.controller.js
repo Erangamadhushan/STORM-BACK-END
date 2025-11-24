@@ -101,3 +101,44 @@ exports.deleteWatch = async (req, res, next) => {
         next(error);
     }
 }
+
+exports.updateWatch = async (req, res, next) => {
+    try {
+        const { modelNumber } = req.params;
+        const { brand, price} = req.body;
+
+        const watches = await readDB();
+        if (!watches || watches.length === 0) {
+            return res.status(200).json({
+                success: true,
+                message: "No watches available",
+                data: null
+            });
+        }
+        
+
+        if (brand === undefined && price === undefined) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide at least one field values to continue'
+            })
+        }
+
+        const watch = watches.find((watch) => watch.modelNumber === modelNumber);
+        console.log(watch);
+        if (watch) {
+            watch.brand = brand;
+            watch.Price = price;
+            console.log(watch);
+
+            await writeDB(watches);
+            return res.status(200).json({
+                message: 'Watch details updated',
+                data: watches
+            })
+        }
+
+    } catch (error) {
+        next(error);
+    }
+}

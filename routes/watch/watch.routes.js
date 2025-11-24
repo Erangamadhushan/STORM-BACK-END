@@ -15,5 +15,8 @@ router.post('/create-watch-model', watchController.createWatch);
 // Delete a watch by model number
 router.delete('/delete-watch-model/:model', watchController.deleteWatch);
 
+// Update watch details
+router.patch('/:modelNumber', watchController.updateWatch);
+
 
 module.exports = router;
