@@ -1,17 +1,22 @@
 [
-    {
-        "modelNumber": "ABC123",
-        "brand": "BrandName",
-        "price": 199.99
-    },
-    {
-        "modelNumber": "XYZ789",
-        "brand": "AnotherBrand",
-        "price": 299.99
-    },
-    {
-        "modelNumber": "LMN456",
-        "brand": "ThirdBrand",
-        "price": 149.99
-    }
+  {
+    "modelNumber": "ABC123",
+    "brand": "BrandName",
+    "price": 199.99
+  },
+  {
+    "modelNumber": "XYZ789",
+    "brand": "AnotherBrand",
+    "price": 299.99
+  },
+  {
+    "modelNumber": "DEF098",
+    "brand": "Rolex",
+    "Price": 239.99
+  },
+  {
+    "modelNumber": "JKL321",
+    "brand": "Rolex New",
+    "Price": 239.99
+  }
 ]

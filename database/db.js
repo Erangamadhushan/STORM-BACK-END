@@ -4,7 +4,11 @@ const path = require('path');
 const DB_FILE = path.join(__dirname, 'watches.json');
 
 async function writeDB(data) {
-    await fs.writeFile(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+    try {
+        await fs.writeFile(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+    } catch (error) {
+        console.error("Error writing to database:", error);
+    }
 }
 
 async function readDB() {
