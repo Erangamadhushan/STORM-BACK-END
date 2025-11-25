@@ -1,46 +1,51 @@
-const { readDB, writeDB } = require('../../database/db');
+// Import my watch model
+const Watch = require('../../models/watch/watch.model');
+
+const ALLOWTYPES = ['analog', 'digital', 'semi-analog'];
 
 exports.getAllWatches = async (req, res, next) => {
+
     try {
-        const watches = await readDB();
-        if (!watches || watches.length === 0) {
+        const items = await Watch.find().lean();
+        if (!items || items.length === 0) {
             return res.status(200).json({
-                success: true,
-                message: "No watches available",
-                data: null
-            });
+                    success: true,
+                    message: "No watches available",
+                    data: null
+                });
         }
 
         return res.status(200).json({
             success: true,
             message: "All watches are retrieved",
-            data: watches
+            data: items
         })
-    }
-    catch (err) {
-        next(err);
+        
+    } catch (error) {
+        
     }
 }
 
 exports.getWatchByModel = async (req, res, next) => {
     try {
-        const model = req.params.model;
-        const watches = await readDB();
-        const filteredWatches = watches.filter(watch => watch.modelNumber === model);
+        const modelNumber = req.params.model;
+        
+        const watch = await Watch.find({modelNumber});
 
-        if (filteredWatches.length === 0) {
-            return res.status(404).json({
+        if (!watch) {
+            return res.status(400).json({
                 success: false,
-                message: `No watch found with model: ${model}`,
+                message: `No watch found with model: ${modelNumber}`,
                 data: null
-            });
+            })
         }
-
         return res.status(200).json({
             success: true,
             message: "Watch retrieved successfully",
-            data: filteredWatches
-        });
+            data: watch
+        })
+
+        
     } catch (error) {
         next(error);
     }
@@ -48,28 +53,44 @@ exports.getWatchByModel = async (req, res, next) => {
 
 exports.createWatch = async (req, res, next) => {
     try {
-        const newWatch = req.body;
-        const watches = await readDB();
+        const {modelNumber, brand, price, type} = req.body;
+        
 
-        // Check if the watch with the same model number already exists
-        const existingWatch = watches.find(watch => watch.modelNumber === newWatch.modelNumber);
-        if (existingWatch) {
+        const normalizedTypes = String(type).toLowerCase();
+        console.log(normalizedTypes);
+
+        if(!ALLOWTYPES.includes(normalizedTypes)) {
             return res.status(400).json({
                 success: false,
-                message: `Watch with model number ${newWatch.modelNumber} already exists`,
-                data: null
+                message: 'Invalid type'
+            })
+        }
+        
+        const existsWatch = await Watch.findOne({ modelNumber });
+
+        if (existsWatch) {
+            return res.status(400).json({
+                success: false,
+                message: "ModelNumber already exists"
             });
         }
+   
+        const newWatch = new Watch({
+            modelNumber, 
+            brand, 
+            price: Number(price),
+            type: normalizedTypes
+        });
+        
 
-        // Add the new watch to the database
-        watches.push(newWatch);
-        await writeDB(watches);
+        await newWatch.save();
 
         return res.status(201).json({
             success: true,
             message: "Watch created successfully",
             data: newWatch
         });
+        
     } catch (error) {
         next(error);
     }
@@ -77,21 +98,11 @@ exports.createWatch = async (req, res, next) => {
 
 exports.deleteWatch = async (req, res, next) => {
     try {
-        const { model } = req.params;
+        const { model: modelNumber } = req.params;
 
-        const watches = await readDB();
-        const existsWatch = watches.find(watch => watch.modelNumber === model);
-        if (!existsWatch) {
-            return res.status(404).json({
-                success: true,
-                message: "Watch is not found",
-                data: null
-            })
-        }
+        await Watch.findOneAndDelete({modelNumber});
 
-        const watchIndex = watches.findIndex(watch => watch.modelNumber === model);
-        watches.splice(watchIndex, 1);
-        await writeDB(watches);
+        
         return res.status(200).json({
             success: true,
             message: "Watch is deleted successfully",
@@ -107,16 +118,6 @@ exports.updateWatch = async (req, res, next) => {
         const { modelNumber } = req.params;
         const { brand, price} = req.body;
 
-        const watches = await readDB();
-        if (!watches || watches.length === 0) {
-            return res.status(200).json({
-                success: true,
-                message: "No watches available",
-                data: null
-            });
-        }
-        
-
         if (brand === undefined && price === undefined) {
             return res.status(400).json({
                 success: false,
@@ -124,20 +125,22 @@ exports.updateWatch = async (req, res, next) => {
             })
         }
 
-        const watch = watches.find((watch) => watch.modelNumber === modelNumber);
-        console.log(watch);
-        if (watch) {
-            watch.brand = brand;
-            watch.Price = price;
-            console.log(watch);
-
-            await writeDB(watches);
+        try {
+            await Watch.findOneAndUpdate({ modelNumber }, {
+                $set: {
+                    brand,
+                    price
+                }
+            });
+            
             return res.status(200).json({
-                message: 'Watch details updated',
-                data: watches
+                message: 'Watch details updated'
             })
         }
-
+        catch (error) {
+            next(error);
+        }
+    
     } catch (error) {
         next(error);
     }

@@ -15,6 +15,10 @@ const watchSchema = new mongoose.Schema({
         type: Number,
         required: true,
         unique: false
+    },
+    type: {
+        type: String,
+        required: true
     }
 }, { timestamps: true});
 
