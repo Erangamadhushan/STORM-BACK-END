@@ -100,7 +100,15 @@ exports.deleteWatch = async (req, res, next) => {
     try {
         const { model: modelNumber } = req.params;
 
-        await Watch.findOneAndDelete({modelNumber});
+        const deleted = await Watch.findOneAndDelete({modelNumber});
+
+        if (!deleted) {
+            return res.status(404).json({
+                success: false,
+                message: "Watch not found",
+                data: null
+            })
+        }
 
         
         return res.status(200).json({
@@ -141,6 +149,32 @@ exports.updateWatch = async (req, res, next) => {
             next(error);
         }
     
+    } catch (error) {
+        next(error);
+    }
+}
+
+exports.getWatchesByType = async (req, res, next) => {
+    try {
+        const {type} = req.params;
+        const normalizedType = String(type).toLowerCase();
+
+        if (ALLOWTYPES.includes(normalizedType)) {
+            return res.status(404).json({
+                success: false,
+                message: 'Invalid type',
+                data: [],
+            });
+        }
+
+        const watches = await Watch.find({type: normalizedType}).lean();
+        
+        return res.status(200).json({
+            success: true,
+            message: "Watch fetched by type successfully",
+            count: watches.length,
+            data: watches
+        })
     } catch (error) {
         next(error);
     }
