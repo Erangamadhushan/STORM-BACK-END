@@ -9,6 +9,9 @@ router.get('/', watchController.getAllWatches);
 // Route: /api/watches/:model
 router.get('/:model', watchController.getWatchByModel);
 
+// Route: /api/watches/:type
+router.get('/:type', watchController.getWatchesByType);
+
 // Create a new watch
 router.post('/create-watch-model', watchController.createWatch);
 
