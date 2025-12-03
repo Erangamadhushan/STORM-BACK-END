@@ -2,6 +2,7 @@ const express = require('express');
 require('dotenv').config;
 const app = express();
 const watchRoutes = require('./routes/watch/watch.routes');
+const customerRoutes = require('./routes/user/customer.routes');
 const config = require('./config');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -23,6 +24,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/watches', watchRoutes);
+app.use('/api/customer', customerRoutes);
 
 
 app.use(errorHandler);
@@ -30,7 +32,7 @@ app.use(errorHandler);
 
 
 // Start the server
-const PORT = process.env.PORT || 5000;
+const PORT = config.port || 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`Visit http://localhost:${PORT}/ to access the server.`);
