@@ -1,4 +1,46 @@
 const Customer = require('../../models/user/customer.model');
+const bcrypt = require('bcryptjs');
+const config = require('../../config/index');
+
+
+exports.createCustomer = async (req, res, next) => {
+    try {
+        const {name, email, password, contactNumber, shippingAddress} = req.body;
+
+        if (!name || !email || !password || !contactNumber || !shippingAddress) {
+            return res.status(400).json({
+                success: true,
+                message: "All customer require fields are required!",
+                data: null
+            })
+        }
+
+        const existingCustomer = await Customer.findOne({email});
+
+        if (existingCustomer) {
+            return res.status(400).json({
+                success: false,
+                message: "Customer with this email already exists",
+                data: null
+            });
+        }
+
+        const salt = await bcrypt.genSalt(config.gen_salt);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const newCustomer = new Customer({name, email, password: hashedPassword, contactNumber, shippingAddress});
+        await newCustomer.save();
+        const {password:_, ...newCustomerResponse} = newCustomer;
+        return res.status(201).json({
+            success: true,
+            message: "Customer created successfully",
+            data: newCustomerResponse
+        });
+        
+    } catch (error) {
+        next(error);
+    }
+}
 
 exports.getAllCustomers = async (req, res, next) => {
     try {
@@ -36,30 +78,6 @@ exports.getCustomerByEmail = async (req, res, next) => {
             success: true,
             message: "Customer retrieved successfully",
             data: customer
-        });
-    } catch (error) {
-        next(error);
-    }
-}
-
-exports.createCustomer = async (req, res, next) => {
-    try {
-        const {name, email, password, contactNumber, shippingAddress} = req.body;
-        const existingCustomer = await Customer.findOne({email});
-
-        if (existingCustomer) {
-            return res.status(400).json({
-                success: false,
-                message: "Customer with this email already exists",
-                data: null
-            });
-        }
-        const newCustomer = new Customer({name, email, password, contactNumber, shippingAddress});
-        await newCustomer.save();
-        return res.status(201).json({
-            success: true,
-            message: "Customer created successfully",
-            data: newCustomer
         });
     } catch (error) {
         next(error);
@@ -113,4 +131,3 @@ exports.updateCustomer = async (req, res, next) => {
         next(error);
     }
 }
-
