@@ -6,15 +6,22 @@ const watchSchema = new mongoose.Schema({
         required: true, 
         unique: true
     },
+    imageURL: {
+        type: String,
+        required: true
+    },
     brand: {
         type: String,
-        rquired: true,
-        unique: false
+        required: true,
+    },
+    countryOfOrigin: {
+        type: String,
+        required: true,
     },
     price: {
         type: Number,
         required: true,
-        unique: false
+        min: [0, 'Price must be positive number']
     },
     type: {
         type: String,
@@ -22,4 +29,4 @@ const watchSchema = new mongoose.Schema({
     }
 }, { timestamps: true});
 
-module.exports = mongoose.model('Watch', watchSchema)
+module.exports = mongoose.model('Watch', watchSchema);
