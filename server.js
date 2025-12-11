@@ -1,6 +1,6 @@
 const express = require('express');
-require('dotenv').config;
 const app = express();
+const cors = require('cors');
 const watchRoutes = require('./routes/watch/watch.routes');
 const customerRoutes = require('./routes/user/customer.routes');
 const config = require('./config');
@@ -16,6 +16,8 @@ app.use(express.json());
 app.use(express.urlencoded({
     extended: true
 }));
+// Enable CORS
+app.use(cors());
 app.use(express.static('public')); 
 
 // Sample route
@@ -35,7 +37,7 @@ app.use(errorHandler);
 const PORT = config.port || 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-    console.log(`Visit http://localhost:${PORT}/ to access the server.`);
+    console.log(`Visit http://localhost:${PORT} to access the server.`);
     
 }); 
 

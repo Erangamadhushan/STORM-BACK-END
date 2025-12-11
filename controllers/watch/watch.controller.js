@@ -53,18 +53,18 @@ exports.getWatchByModel = async (req, res, next) => {
 
 exports.createWatch = async (req, res, next) => {
     try {
-        const {modelNumber, brand, price, type} = req.body;
+        const {modelNumber,imageURL, brand, countryOfOrigin, price, type} = req.body;
         
 
         const normalizedTypes = String(type).toLowerCase();
         console.log(normalizedTypes);
 
-        if(!ALLOWTYPES.includes(normalizedTypes)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid type'
-            })
-        }
+        // if(!ALLOWTYPES.includes(normalizedTypes)) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         message: 'Invalid type'
+        //     })
+        // }
         
         const existsWatch = await Watch.findOne({ modelNumber });
 
@@ -76,8 +76,10 @@ exports.createWatch = async (req, res, next) => {
         }
    
         const newWatch = new Watch({
-            modelNumber, 
+            modelNumber,
+            imageURL, 
             brand, 
+            countryOfOrigin,
             price: Number(price),
             type: normalizedTypes
         });
