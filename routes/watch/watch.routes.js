@@ -6,8 +6,8 @@ const watchController = require('../../controllers/watch/watch.controller');
 // Route to get all watches, base routes: api/watches
 router.get('/', watchController.getAllWatches);
 
-// Route: /api/watches/:model
-router.get('/:model', watchController.getWatchByModel);
+// Route: /api/watches/model/:modelNumber
+router.get('/model/:modelNumber', watchController.getWatchByModel);
 
 // Route: /api/watches/:type
 router.get('/:type', watchController.getWatchesByType);

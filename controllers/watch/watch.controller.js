@@ -28,7 +28,8 @@ exports.getAllWatches = async (req, res, next) => {
 
 exports.getWatchByModel = async (req, res, next) => {
     try {
-        const modelNumber = req.params.model;
+        const {modelNumber} = req.params;
+        console.log(modelNumber);
         
         const watch = await Watch.find({modelNumber});
 
