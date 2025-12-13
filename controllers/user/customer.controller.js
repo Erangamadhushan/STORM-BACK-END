@@ -1,11 +1,12 @@
 const Customer = require('../../models/user/customer.model');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const config = require('../../config/index');
 
 
 exports.createCustomer = async (req, res, next) => {
     try {
-        const {name, email, password, contactNumber, shippingAddress} = req.body;
+        const {name, email, contactNumber, password, shippingAddress} = req.body;
 
         if (!name || !email || !password || !contactNumber || !shippingAddress) {
             return res.status(400).json({
@@ -25,7 +26,7 @@ exports.createCustomer = async (req, res, next) => {
             });
         }
 
-        const salt = await bcrypt.genSalt(config.gen_salt);
+        const salt = await bcrypt.genSalt(parseInt(config.SALT_ROUNDS));
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const newCustomer = new Customer({name, email, password: hashedPassword, contactNumber, shippingAddress});
@@ -64,8 +65,9 @@ exports.getAllCustomers = async (req, res, next) => {
 
 exports.getCustomerByEmail = async (req, res, next) => {
     try {
-        const email = req.params.email;
-        const customer = await Customer.findOne({email});
+        const {email, password} = req.params;
+        console.log(email, password);
+        const customer = await Customer.findOne({ email });
 
         if (!customer) {
             return res.status(400).json({
@@ -74,11 +76,35 @@ exports.getCustomerByEmail = async (req, res, next) => {
                 data: null
             });
         }
+
+        // Verify customer credentials
+        const verify = await bcrypt.compare(password, customer.password);
+
+        if (!verify) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid credentials",
+                data: null
+            })
+        }
+
+        const getUser = customer.toObject();
+        delete getUser.password;
+
+        // Create jwt token
+        const token = await jwt.sign(
+            {id: customer._id, email: customer.email},
+            config.JWT_SECRET,
+            { expiresIn: '3h'}
+        )
+
         return res.status(200).json({
             success: true,
             message: "Customer retrieved successfully",
-            data: customer
+            data: { getUser, token }
         });
+
+        
     } catch (error) {
         next(error);
     }

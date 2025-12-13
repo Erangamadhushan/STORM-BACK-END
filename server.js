@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const watchRoutes = require('./routes/watch/watch.routes');
-const customerRoutes = require('./routes/user/customer.routes');
+const userRoutes = require('./routes/user/customer.routes');
 const config = require('./config');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -17,7 +17,13 @@ app.use(express.urlencoded({
     extended: true
 }));
 // Enable CORS
-app.use(cors());
+app.use(cors(
+    {
+        origin: '*',
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization']
+    }
+));
 app.use(express.static('public')); 
 
 // Sample route
@@ -26,7 +32,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/watches', watchRoutes);
-app.use('/api/customer', customerRoutes);
+app.use('/api/auth', userRoutes);
 
 
 app.use(errorHandler);

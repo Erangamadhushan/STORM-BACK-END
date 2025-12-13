@@ -3,13 +3,13 @@ const router = express.Router();
 
 const customerController = require('../../controllers/user/customer.controller');
 // Create a new customer
-router.post('/create-customer', customerController.createCustomer);
+router.post('/create-account', customerController.createCustomer);
 
 // Route to get all customers, base route: api/customers
 router.get('/', customerController.getAllCustomers);
 
-// Route: /api/customers/:email
-router.get('/:email', customerController.getCustomerByEmail);
+// Route: /api/auth/login
+router.get('/login', customerController.getCustomerByEmail);
 
 
 // Delete a customer by email
