@@ -1,46 +1,21 @@
-const config = require('../config/index');
-const Customer = require('../models/user/customer.model');
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
-exports.verifyToken = async (req, res, next) => {
-    const authHeader = req.headers['authorization'];
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
-    if (!authHeader) {
-        return res.status(401).json({
-            success: false,
-            message: "Authorization header missing"
-        });
-    }
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "No token provided" });
+  }
 
-    const token = authHeader.split(" ")[1];
+  const token = authHeader.split(" ")[1];
 
-    if (!token) {
-        return res.status(401).json({
-            success: false,
-            message: "Token missing"
-        })
-    }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // { id, email }
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid or expired token" });
+  }
+};
 
-    // Verify Token
-    jwt.verify(token, config.JWT_SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(403).json({
-                success: false,
-                message: "Invalid or expired token"
-            })
-        }
-    });
-
-    // Find User from decoded token
-
-    const customer = await Customer.findOne({ _id: decoded.id }).select("-password");
-
-    if (!customer) {
-        return res.status(404).json({
-            success: false,
-            message: "User no longer exists"
-        })
-    }
-
-    req.customer = customer;
-}
+module.exports = verifyToken;

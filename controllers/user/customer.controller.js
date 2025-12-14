@@ -66,7 +66,16 @@ exports.getAllCustomers = async (req, res, next) => {
 exports.getCustomerByEmail = async (req, res, next) => {
     try {
         const {email, password} = req.params;
-        console.log(email, password);
+        console.log(req.params);
+
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Email and password are required",
+                data: null
+            });
+        }
+
         const customer = await Customer.findOne({ email });
 
         if (!customer) {
@@ -105,6 +114,55 @@ exports.getCustomerByEmail = async (req, res, next) => {
         });
 
         
+    } catch (error) {
+        next(error);
+    }
+}
+
+exports.authenticateCustomer = async (req, res, next) => {
+    try {
+        const {email, password} = req.body;
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Email and password are required",
+                data: null
+            });
+        }
+        const customer = await Customer.findOne({ email });
+
+        if (!customer) {
+            return res.status(400).json({
+                success: false,
+                message: `No customer found with email: ${email}`,
+                data: null
+            });
+        }
+        // Verify customer credentials
+        const verify = await bcrypt.compare(password, customer.password);
+
+        if (!verify) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid credentials",
+                data: null
+            })
+        }
+        const getUser = customer.toObject();
+        delete getUser.password;
+
+        // Create jwt token
+        const token = await jwt.sign(
+            {id: customer._id, email: customer.email},
+            config.JWT_SECRET,
+            { expiresIn: '3h'}
+        )
+
+        return res.status(200).json({
+            success: true,
+            message: "Customer authenticated successfully",
+            data: { getUser, token }
+        });
     } catch (error) {
         next(error);
     }
