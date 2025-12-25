@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 const watchRoutes = require('./routes/watch/watch.routes');
 const userRoutes = require('./routes/user/customer.routes');
+const paymentRoutes = require('./routes/payment/payment.routes');
 const config = require('./config');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -33,6 +34,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/watches', watchRoutes);
 app.use('/api/auth', userRoutes);
+app.use('/api/payments', paymentRoutes);
 
 
 app.use(errorHandler);
