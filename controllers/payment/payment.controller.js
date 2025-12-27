@@ -2,7 +2,8 @@ const stripe = require('../../config/stripe');
 
 exports.createPaymentIntent = async (req, res) => {
     try {
-        const { watch } = req.body;
+        const { image, name, price, quantity } = req.body;
+        console.log('Creating payment intent for watch:', req.body);
 
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -11,12 +12,12 @@ exports.createPaymentIntent = async (req, res) => {
                 price_data: {
                     currency: 'usd',
                     product_data: {
-                        name: watch.name,
-                        image: [watch.image],
+                        name: name,
+                        images: [image],
                     },
-                    unit_amount: watch.price * 100,
+                    unit_amount: price,
                 },
-                quantity: watch.quantity,
+                quantity:quantity,
             },
         ],
             success_url: `${process.env.CLIENT_URL}/payment-success`,
