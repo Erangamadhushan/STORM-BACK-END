@@ -15,7 +15,7 @@ exports.createPaymentIntent = async (req, res) => {
                         name: name,
                         images: [image],
                     },
-                    unit_amount: price,
+                    unit_amount: parseInt(price/quantity),
                 },
                 quantity:quantity,
             },
