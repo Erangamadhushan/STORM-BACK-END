@@ -1,5 +1,12 @@
 # ⌚ Storm Backend
 
+![bcryptjs](https://img.shields.io/badge/bcryptjs-3.0%2B-blue?style=flat)
+![Node.js](https://img.shields.io/badge/Node.js-18%2B-success?style=flat)
+![MongoDB](https://img.shields.io/badge/MongoDB-8.19%2B-brightgreen?style=flat)
+![CORS](https://img.shields.io/badge/CORS-enabled-yellow?style=flat)
+![Express.js](https://img.shields.io/badge/Express.js-5.1%2B-lightgrey?style=flat)
+
+
 Backend service for the **Storm Watch Selling Website**, built with **Node.js, Express, and MongoDB**.  
 This API handles authentication, product management, payments, and core business logic for the Storm e-commerce platform.
 
@@ -20,13 +27,13 @@ This API handles authentication, product management, payments, and core business
 
 ## 🛠 Tech Stack
 
-- **Runtime:** Node.js  
-- **Framework:** Express.js  
-- **Database:** MongoDB (Mongoose ODM)  
-- **Authentication:** JSON Web Tokens (JWT)  
-- **Security:** bcryptjs  
-- **Payments:** Stripe API  
-- **Environment Config:** dotenv  
+- **Runtime:** Node.js
+- **Framework:** Express.js
+- **Database:** MongoDB (Mongoose ODM)
+- **Authentication:** JSON Web Tokens (JWT)
+- **Security:** bcryptjs
+- **Payments:** Stripe API
+- **Environment Config:** dotenv
 
 ---
 
@@ -55,12 +62,14 @@ git clone https://github.com/Erangamadhushan/STORM-BACK-END.git
 ```
 
 2. Install dependencies
+
 ```bash
 npm install
 ```
 
 3. Configure environment variables
-Create a `.env` file in the root directory:
+   Create a `.env` file in the root directory:
+
 ```bash
 PORT=5000
 MONGODB_URI=your_mongodb_uri
@@ -81,16 +90,19 @@ GOOGLE_CLIENT_SECRET=your_google_console_client_secret
 > # Running the Application
 
 ## Development mode (with nodemon)
+
 ```bash
 npm run dev
 ```
 
 ## Production mode
+
 ```bash
 npm start
 ```
 
 ## Server will start on:
+
 ```bash
 http://localhost:5000
 ```
@@ -110,10 +122,10 @@ http://localhost:5000
 > # 🌐 Frontend Integration
 
 This backend is designed to work with the Storm Frontend application
+
 - CORS enabled for cross-origin requests
 - Token-based authentication
 - JSON-based API responses
-
 
 🧪 Future Improvements
 
@@ -127,7 +139,6 @@ This backend is designed to work with the Storm Frontend application
 
 Eranga Madhushan
 GitHub: [Erangamadhushan]('https://github.com/Erangamadhushan')
-
 
 # ⭐ Support
 
