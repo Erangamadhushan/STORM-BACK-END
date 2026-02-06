@@ -9,6 +9,10 @@ exports.createPaymentIntent = async (req, res) => {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
+        if (!stripe) {
+            return res.status(500).json({ error: 'Stripe is not configured properly' });
+        }
+
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             mode: "payment",
