@@ -5,6 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "build": "echo \"Storm Back-end\"",
+    "test": "echo \"Set up tests for Storm Back-end\"",
     "dev": "nodemon server.js"
   },
   "repository": {
