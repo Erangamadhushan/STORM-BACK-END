@@ -5,6 +5,14 @@ exports.createPaymentIntent = async (req, res) => {
         const { image, name, price, quantity } = req.body;
         console.log('Creating payment intent for watch:', req.body);
 
+        if (!image || !name || !price || !quantity) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        if (!stripe) {
+            return res.status(500).json({ error: 'Stripe is not configured properly' });
+        }
+
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             mode: "payment",
@@ -23,6 +31,16 @@ exports.createPaymentIntent = async (req, res) => {
             success_url: `${process.env.CLIENT_URL}/payment-success`,
             cancel_url: `${process.env.CLIENT_URL}/payment-failure`,
         });
+
+        // Save the session ID and order details to your database here if needed
+        const order = new Order({
+            userId: req.user.id, 
+            stripeSessionId: session.id,
+            paymentMethod: "card",
+            amount: price,
+            status: "pending",
+        });
+        await order.save();
 
         res.json({ url: session.url });
     }

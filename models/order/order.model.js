@@ -2,7 +2,10 @@ const e = require("cors");
 const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
-  userId: String,
+  userId: {
+    type: String,
+    require: true
+  },
   stripeSessionId: String,
   paymentMethod: String,
   amount: Number,
