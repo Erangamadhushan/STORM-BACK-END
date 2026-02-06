@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "build": "echo \"Storm Back-end\"",
-    "test": "echo \"Set up tests for Storm Back-end\"",
+    "test": "jest --runInBand",
+    "test:watch": "jest --watch",
     "dev": "nodemon server.js"
   },
   "repository": {
@@ -30,6 +31,9 @@
     "stripe": "^20.1.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "jest": "^30.2.0",
+    "mongodb-memory-server": "^11.0.1",
+    "nodemon": "^3.1.11",
+    "supertest": "^7.2.2"
   }
 }
