@@ -1,7 +1,13 @@
 const Stripe = require('stripe');
 
-if (!process.env.STRIPE_SECRET_KEY) {
-    console.error("Error: STRIPE_SECRET_KEY is not defined in environment variables.");
+try {
+    if (!process.env.STRIPE_SECRET_KEY) {
+        throw new Error("STRIPE_SECRET_KEY is not defined in environment variables");
+    }
+
+}
+catch (error) {
+    console.error("Error loading Stripe configuration:", error.message);
     process.exit(1);
 }
 
